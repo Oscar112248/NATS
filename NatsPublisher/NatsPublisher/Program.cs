@@ -16,4 +16,4 @@ await using var nc = new NatsConnection(new NatsOpts
 
 await nc.PublishAsync("test.saludo", message);
 
-Console.WriteLine("✅ Mensaje enviado");
+Console.WriteLine("Mensaje enviado");
