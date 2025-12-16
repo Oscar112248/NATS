@@ -7,15 +7,7 @@ using System.Text.Json;
 var natsUrl = Environment.GetEnvironmentVariable("NATS_URL")
               ?? "nats://172.22.4.106:4222";
 var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
-var evento = new PagoConfirmadoEvent
-{
-    Referencia = Guid.NewGuid().ToString("N"),
-    Monto = 12.50m,
-    Moneda = "USD",
-    Fecha = DateTime.UtcNow,
-    Canal = "WEB",
-    Contador =0
-};
+
 await using var nc = new NatsConnection(new NatsOpts { Url = natsUrl });
 
 var js = nc.CreateJetStreamContext();
@@ -27,17 +19,33 @@ await js.CreateOrUpdateStreamAsync(new StreamConfig
     Subjects = new[] { "pago.*" }
 });
 
-var json = JsonSerializer.SerializeToUtf8Bytes(evento);
 
-var contador = 0;
-while (contador != 50)
+
+for (var contador = 0; contador < 50; contador++)
 {
+    var evento = new PagoConfirmadoEvent
+    {
+        Referencia = Guid.NewGuid().ToString("N"),
+        Monto = 12.50m,
+        Moneda = "USD",
+        Fecha = DateTime.UtcNow,
+        Canal = "WEB",
+        Contador = contador + 1
+    };
+
     using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-   string mensaje = $"Publicando evento de pago confirmado #{contador + 1}";
-    // Publicar persistente
-    await js.PublishAsync(subject, mensaje, cancellationToken: cts.Token);
+
+    try
+    {
+        await js.PublishAsync(subject, evento, cancellationToken: cts.Token);
+        Console.WriteLine($"Publicado #{contador + 1}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Falló publish #{contador + 1}: {ex.Message}");
+    }
+
     await Task.Delay(1000);
-    contador++;
 }
 
 

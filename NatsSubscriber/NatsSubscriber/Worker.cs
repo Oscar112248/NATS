@@ -49,7 +49,7 @@ namespace NatsSubscriber
              config: consumerCfg,
              cancellationToken: stoppingToken);
 
-            _logger.LogInformation("JetStream consumer listo. Stream=TEST Subject={Subject}", subject);
+            _logger.LogInformation("JetStream consumer listo. Stream=PAGOS Subject={Subject}", subject);
 
 
             await foreach (var msg in consumer.ConsumeAsync<string>(cancellationToken: stoppingToken))
