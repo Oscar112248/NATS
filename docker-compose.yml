@@ -9,7 +9,7 @@ services:
 
   subscriber:
     build:
-      context: ./NatsSubscriber
+      context: ./NatsSubscriber/NatsSubscriber
     depends_on:
       - nats
     environment:
@@ -17,7 +17,7 @@ services:
 
   publisher:
     build:
-      context: ./NatsPublisher
+      context: ./NatsPublisher/NatsPublisher
     depends_on:
       - nats
     environment:
