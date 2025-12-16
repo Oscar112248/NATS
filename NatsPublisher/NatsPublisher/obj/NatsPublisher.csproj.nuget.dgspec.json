@@ -58,6 +58,10 @@
             "NATS.Client.Core": {
               "target": "Package",
               "version": "[2.6.12, )"
+            },
+            "NATS.Client.JetStream": {
+              "target": "Package",
+              "version": "[2.6.12, )"
             }
           },
           "imports": [

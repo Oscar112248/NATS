@@ -603,6 +603,22 @@
           }
         }
       },
+      "NATS.Client.JetStream/2.6.12": {
+        "type": "package",
+        "dependencies": {
+          "NATS.Client.Core": "2.6.12"
+        },
+        "compile": {
+          "lib/net8.0/NATS.Client.JetStream.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/NATS.Client.JetStream.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "System.Diagnostics.EventLog/10.0.1": {
         "type": "package",
         "compile": {
@@ -1599,6 +1615,28 @@
         "nats.client.core.nuspec"
       ]
     },
+    "NATS.Client.JetStream/2.6.12": {
+      "sha512": "EreNxHXDqatIZXKyhYgzyjwi7lShMM7T6DF7bfDTlGgwN75FBA0ebgYnyA2ovNUBtERepFqtl4fiZJEbvWQrbw==",
+      "type": "package",
+      "path": "nats.client.jetstream/2.6.12",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE",
+        "README.md",
+        "lib/net6.0/NATS.Client.JetStream.dll",
+        "lib/net6.0/NATS.Client.JetStream.xml",
+        "lib/net8.0/NATS.Client.JetStream.dll",
+        "lib/net8.0/NATS.Client.JetStream.xml",
+        "lib/netstandard2.0/NATS.Client.JetStream.dll",
+        "lib/netstandard2.0/NATS.Client.JetStream.xml",
+        "lib/netstandard2.1/NATS.Client.JetStream.dll",
+        "lib/netstandard2.1/NATS.Client.JetStream.xml",
+        "nats.client.jetstream.2.6.12.nupkg.sha512",
+        "nats.client.jetstream.nuspec"
+      ]
+    },
     "System.Diagnostics.EventLog/10.0.1": {
       "sha512": "xfaHEHVDkMOOZR5S6ZGezD0+vekdH1Nx/9Ih8/rOqOGSOk1fxiN3u94bYkBW/wigj0Uw2Wt3vvRj9mtYdgwEjw==",
       "type": "package",
@@ -1642,7 +1680,8 @@
     "net10.0": [
       "Microsoft.Extensions.Hosting >= 10.0.1",
       "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.23.0",
-      "NATS.Client.Core >= 2.6.12"
+      "NATS.Client.Core >= 2.6.12",
+      "NATS.Client.JetStream >= 2.6.12"
     ]
   },
   "packageFolders": {
@@ -1705,6 +1744,10 @@
             "version": "[1.23.0, )"
           },
           "NATS.Client.Core": {
+            "target": "Package",
+            "version": "[2.6.12, )"
+          },
+          "NATS.Client.JetStream": {
             "target": "Package",
             "version": "[2.6.12, )"
           }

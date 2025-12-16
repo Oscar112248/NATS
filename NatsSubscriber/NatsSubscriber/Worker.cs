@@ -1,5 +1,7 @@
 ﻿using NATS.Client;
 using NATS.Client.Core;
+using NATS.Client.JetStream.Models;
+using NATS.Net;
 
 namespace NatsSubscriber
 {
@@ -16,22 +18,43 @@ namespace NatsSubscriber
         {
             var natsUrl = Environment.GetEnvironmentVariable("NATS_URL")
                           ?? "nats://172.22.4.106:4222";
+            var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "test.saludo";
+
 
             _logger.LogInformation("Conectando a NATS en {Url}", natsUrl);
+            await using var nc = new NatsConnection(new NatsOpts { Url = natsUrl });
 
-            await using var nc = new NatsConnection(new NatsOpts
+            var js = nc.CreateJetStreamContext();
+
+            // Stream (por si no existe)
+            await js.CreateOrUpdateStreamAsync(new StreamConfig
             {
-                Url = natsUrl
+                Name = "TEST",
+                Subjects = new[] { "test.pruebas" }
             });
 
-            _logger.LogInformation("Suscrito a test.saludo");
-
-            await foreach (var msg in nc.SubscribeAsync<string>(
-                               subject: "test.saludo",
-                               cancellationToken: stoppingToken))
+            // Consumer durable (recuerda el progreso)
+            var consumer = await js.CreateOrUpdateConsumerAsync("TEST", new ConsumerConfig
             {
-                _logger.LogInformation("Recibido: {Msg}", msg.Data);
+                DurableName = "SUB_TEST",
+                AckPolicy = ConsumerConfigAckPolicy.Explicit
+            }, stoppingToken);
+
+            _logger.LogInformation(" Consumidor JetStream listo. Escuchando {Subject}", subject);
+
+            await foreach (var msg in consumer.ConsumeAsync<string>(cancellationToken: stoppingToken))
+            {
+                try
+                {
+                    _logger.LogInformation("Recibido: {Msg}", msg.Data);
+                    await msg.AckAsync(); // ACK explícito (si no, reintenta)
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error procesando (sin ACK => JetStream reintentará)");
+                }
             }
+
         }
     }
 }

@@ -57,6 +57,22 @@
             "related": ".xml"
           }
         }
+      },
+      "NATS.Client.JetStream/2.6.12": {
+        "type": "package",
+        "dependencies": {
+          "NATS.Client.Core": "2.6.12"
+        },
+        "compile": {
+          "lib/net8.0/NATS.Client.JetStream.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/NATS.Client.JetStream.dll": {
+            "related": ".xml"
+          }
+        }
       }
     }
   },
@@ -239,12 +255,35 @@
         "nats.client.core.2.6.12.nupkg.sha512",
         "nats.client.core.nuspec"
       ]
+    },
+    "NATS.Client.JetStream/2.6.12": {
+      "sha512": "EreNxHXDqatIZXKyhYgzyjwi7lShMM7T6DF7bfDTlGgwN75FBA0ebgYnyA2ovNUBtERepFqtl4fiZJEbvWQrbw==",
+      "type": "package",
+      "path": "nats.client.jetstream/2.6.12",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE",
+        "README.md",
+        "lib/net6.0/NATS.Client.JetStream.dll",
+        "lib/net6.0/NATS.Client.JetStream.xml",
+        "lib/net8.0/NATS.Client.JetStream.dll",
+        "lib/net8.0/NATS.Client.JetStream.xml",
+        "lib/netstandard2.0/NATS.Client.JetStream.dll",
+        "lib/netstandard2.0/NATS.Client.JetStream.xml",
+        "lib/netstandard2.1/NATS.Client.JetStream.dll",
+        "lib/netstandard2.1/NATS.Client.JetStream.xml",
+        "nats.client.jetstream.2.6.12.nupkg.sha512",
+        "nats.client.jetstream.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net10.0": [
       "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.23.0",
-      "NATS.Client.Core >= 2.6.12"
+      "NATS.Client.Core >= 2.6.12",
+      "NATS.Client.JetStream >= 2.6.12"
     ]
   },
   "packageFolders": {
@@ -303,6 +342,10 @@
             "version": "[1.23.0, )"
           },
           "NATS.Client.Core": {
+            "target": "Package",
+            "version": "[2.6.12, )"
+          },
+          "NATS.Client.JetStream": {
             "target": "Package",
             "version": "[2.6.12, )"
           }
