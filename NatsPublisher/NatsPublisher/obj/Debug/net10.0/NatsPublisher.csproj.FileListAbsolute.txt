@@ -1,0 +1,15 @@
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\bin\Debug\net10.0\NatsPublisher.exe
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\bin\Debug\net10.0\NatsPublisher.deps.json
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\bin\Debug\net10.0\NatsPublisher.runtimeconfig.json
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\bin\Debug\net10.0\NatsPublisher.dll
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\bin\Debug\net10.0\NatsPublisher.pdb
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\obj\Debug\net10.0\NatsPublisher.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\obj\Debug\net10.0\NatsPublisher.AssemblyInfoInputs.cache
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\obj\Debug\net10.0\NatsPublisher.AssemblyInfo.cs
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\obj\Debug\net10.0\NatsPublisher.csproj.CoreCompileInputs.cache
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\obj\Debug\net10.0\NatsPublisher.sourcelink.json
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\obj\Debug\net10.0\NatsPublisher.dll
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\obj\Debug\net10.0\refint\NatsPublisher.dll
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\obj\Debug\net10.0\NatsPublisher.pdb
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\obj\Debug\net10.0\NatsPublisher.genruntimeconfig.cache
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsPublisher\NatsPublisher\obj\Debug\net10.0\ref\NatsPublisher.dll
