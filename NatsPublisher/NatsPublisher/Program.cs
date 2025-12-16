@@ -33,11 +33,12 @@ for (var contador = 0; contador < 50; contador++)
         Contador = contador + 1
     };
 
+    var json = JsonSerializer.SerializeToUtf8Bytes(evento);
     using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
     try
     {
-        await js.PublishAsync(subject, evento, cancellationToken: cts.Token);
+        await js.PublishAsync(subject, json, cancellationToken: cts.Token);
         Console.WriteLine($"Publicado #{contador + 1}");
     }
     catch (Exception ex)
