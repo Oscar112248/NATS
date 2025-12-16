@@ -63,7 +63,7 @@ for (var contador = 0; contador < 50; contador++)
         }
         catch (NatsJSPublishNoResponseException ex)
         {
-            Console.WriteLine($"No response en #{contador + 1} (intento {attempt}). Reconectando... {ex.Message}");
+            Console.WriteLine($"No response en #{contador + 1} (intento {attempt}). Reconectando... {ex.InnerException.Message}");
 
             // Reconecta y reintenta
             try { await nc.DisposeAsync(); } catch { /* ignore */ }
@@ -72,7 +72,7 @@ for (var contador = 0; contador < 50; contador++)
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Falló publish #{contador + 1} (intento {attempt}): {ex.GetType().Name} - {ex.Message}");
+            Console.WriteLine($"Falló publish #{contador + 1} (intento {attempt}): {ex.GetType().Name} - {ex.InnerException.Message}");
             await Task.Delay(2000);
         }
 
