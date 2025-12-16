@@ -34,11 +34,10 @@ for (var contador = 0; contador < 50; contador++)
     };
 
     var json = JsonSerializer.SerializeToUtf8Bytes(evento);
-    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
     try
     {
-        await js.PublishAsync(subject, json, cancellationToken: cts.Token);
+        await js.PublishAsync(subject, json);
         Console.WriteLine($"Publicado #{contador + 1}");
     }
     catch (Exception ex)
@@ -58,4 +57,4 @@ public sealed class PagoConfirmadoEvent
     public DateTime Fecha { get; set; }
     public string Canal { get; set; } = "WEB";
     public int Contador { get; set; }
-    }
+}
