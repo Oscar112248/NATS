@@ -47,3 +47,4 @@ C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsSubscribe
 C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsSubscriber\NatsSubscriber\obj\Debug\net10.0\NatsSubscriber.pdb
 C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsSubscriber\NatsSubscriber\obj\Debug\net10.0\NatsSubscriber.genruntimeconfig.cache
 C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsSubscriber\NatsSubscriber\obj\Debug\net10.0\ref\NatsSubscriber.dll
+C:\Users\omaldonado\Documents\SAO Documentacion\NATS\NATS GIT\NATS\NatsSubscriber\NatsSubscriber\bin\Debug\net10.0\NATS.Client.Core.dll

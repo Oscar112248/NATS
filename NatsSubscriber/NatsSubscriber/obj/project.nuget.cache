@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "9YKjSOiSWIM=",
+  "dgSpecHash": "lZPNdAsjqzA=",
   "success": true,
   "projectFilePath": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsSubscriber\\NatsSubscriber\\NatsSubscriber.csproj",
   "expectedPackageFiles": [
@@ -32,6 +32,7 @@
     "C:\\Users\\omaldonado\\.nuget\\packages\\microsoft.extensions.options.configurationextensions\\10.0.1\\microsoft.extensions.options.configurationextensions.10.0.1.nupkg.sha512",
     "C:\\Users\\omaldonado\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.1\\microsoft.extensions.primitives.10.0.1.nupkg.sha512",
     "C:\\Users\\omaldonado\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.23.0\\microsoft.visualstudio.azure.containers.tools.targets.1.23.0.nupkg.sha512",
+    "C:\\Users\\omaldonado\\.nuget\\packages\\nats.client.core\\2.6.12\\nats.client.core.2.6.12.nupkg.sha512",
     "C:\\Users\\omaldonado\\.nuget\\packages\\system.diagnostics.eventlog\\10.0.1\\system.diagnostics.eventlog.10.0.1.nupkg.sha512"
   ],
   "logs": []

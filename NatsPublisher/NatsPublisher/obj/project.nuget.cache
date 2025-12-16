@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "YNkTIkVei74=",
+  "dgSpecHash": "SnDmU5lAFUQ=",
   "success": true,
   "projectFilePath": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsPublisher\\NatsPublisher\\NatsPublisher.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\omaldonado\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.23.0\\microsoft.visualstudio.azure.containers.tools.targets.1.23.0.nupkg.sha512"
+    "C:\\Users\\omaldonado\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\6.0.1\\microsoft.extensions.logging.abstractions.6.0.1.nupkg.sha512",
+    "C:\\Users\\omaldonado\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
+    "C:\\Users\\omaldonado\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.23.0\\microsoft.visualstudio.azure.containers.tools.targets.1.23.0.nupkg.sha512",
+    "C:\\Users\\omaldonado\\.nuget\\packages\\nats.client.core\\2.6.12\\nats.client.core.2.6.12.nupkg.sha512"
   ],
   "logs": []
 }

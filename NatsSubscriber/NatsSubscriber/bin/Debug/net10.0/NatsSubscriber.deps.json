@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v10.0": {
       "NatsSubscriber/1.0.0": {
         "dependencies": {
-          "Microsoft.Extensions.Hosting": "10.0.1"
+          "Microsoft.Extensions.Hosting": "10.0.1",
+          "NATS.Client.Core": "2.6.12"
         },
         "runtime": {
           "NatsSubscriber.dll": {}
@@ -374,6 +375,18 @@
           }
         }
       },
+      "NATS.Client.Core/2.6.12": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.1",
+          "Microsoft.Extensions.Primitives": "10.0.1"
+        },
+        "runtime": {
+          "lib/net8.0/NATS.Client.Core.dll": {
+            "assemblyVersion": "2.6.12.0",
+            "fileVersion": "2.6.12.0"
+          }
+        }
+      },
       "System.Diagnostics.EventLog/10.0.1": {
         "runtime": {
           "lib/net10.0/System.Diagnostics.EventLog.dll": {
@@ -592,6 +605,13 @@
       "sha512": "sha512-DO8XrJkp5x4PddDuc/CH37yDBCs9BYN6ijlKyR3vMb55BP1Vwh90vOX8bNfnKxr5B2qEI3D8bvbY1fFbDveDHQ==",
       "path": "microsoft.extensions.primitives/10.0.1",
       "hashPath": "microsoft.extensions.primitives.10.0.1.nupkg.sha512"
+    },
+    "NATS.Client.Core/2.6.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ySGVv6qqhkce9qMIWlnwDWjdj7OwvDb0E7i9if4tnzy9b7ygVUzvS9lnNVo7GVspbfbhT/vZg96QQJoCnMMPPQ==",
+      "path": "nats.client.core/2.6.12",
+      "hashPath": "nats.client.core.2.6.12.nupkg.sha512"
     },
     "System.Diagnostics.EventLog/10.0.1": {
       "type": "package",

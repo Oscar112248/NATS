@@ -58,6 +58,10 @@
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
               "version": "[1.23.0, )"
+            },
+            "NATS.Client.Core": {
+              "target": "Package",
+              "version": "[2.6.12, )"
             }
           },
           "imports": [

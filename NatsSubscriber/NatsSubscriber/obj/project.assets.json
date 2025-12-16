@@ -586,6 +586,23 @@
           "build/Microsoft.VisualStudio.Azure.Containers.Tools.Targets.targets": {}
         }
       },
+      "NATS.Client.Core/2.6.12": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
+          "Microsoft.Extensions.Primitives": "6.0.0"
+        },
+        "compile": {
+          "lib/net8.0/NATS.Client.Core.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/NATS.Client.Core.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "System.Diagnostics.EventLog/10.0.1": {
         "type": "package",
         "compile": {
@@ -1560,6 +1577,28 @@
         "tools/zh-Hant/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll"
       ]
     },
+    "NATS.Client.Core/2.6.12": {
+      "sha512": "ySGVv6qqhkce9qMIWlnwDWjdj7OwvDb0E7i9if4tnzy9b7ygVUzvS9lnNVo7GVspbfbhT/vZg96QQJoCnMMPPQ==",
+      "type": "package",
+      "path": "nats.client.core/2.6.12",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE",
+        "README.md",
+        "lib/net6.0/NATS.Client.Core.dll",
+        "lib/net6.0/NATS.Client.Core.xml",
+        "lib/net8.0/NATS.Client.Core.dll",
+        "lib/net8.0/NATS.Client.Core.xml",
+        "lib/netstandard2.0/NATS.Client.Core.dll",
+        "lib/netstandard2.0/NATS.Client.Core.xml",
+        "lib/netstandard2.1/NATS.Client.Core.dll",
+        "lib/netstandard2.1/NATS.Client.Core.xml",
+        "nats.client.core.2.6.12.nupkg.sha512",
+        "nats.client.core.nuspec"
+      ]
+    },
     "System.Diagnostics.EventLog/10.0.1": {
       "sha512": "xfaHEHVDkMOOZR5S6ZGezD0+vekdH1Nx/9Ih8/rOqOGSOk1fxiN3u94bYkBW/wigj0Uw2Wt3vvRj9mtYdgwEjw==",
       "type": "package",
@@ -1602,7 +1641,8 @@
   "projectFileDependencyGroups": {
     "net10.0": [
       "Microsoft.Extensions.Hosting >= 10.0.1",
-      "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.23.0"
+      "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.23.0",
+      "NATS.Client.Core >= 2.6.12"
     ]
   },
   "packageFolders": {
@@ -1663,6 +1703,10 @@
           "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
             "target": "Package",
             "version": "[1.23.0, )"
+          },
+          "NATS.Client.Core": {
+            "target": "Package",
+            "version": "[2.6.12, )"
           }
         },
         "imports": [
