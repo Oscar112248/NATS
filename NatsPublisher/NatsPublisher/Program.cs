@@ -5,21 +5,17 @@ using NATS.Net;
 using System.Text.Json;
 
 var natsUrl = Environment.GetEnvironmentVariable("NATS_URL")
-              ?? "nats://172.22.4.106:4222";
+              ?? "nats://nats:4222"; // puede ser el nombre del servicio nats o la ip
 var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
 
-await using var nc = new NatsConnection(new NatsOpts { Url = natsUrl });
+(NatsConnection nc, INatsJSContext js) = await ConnectAsync(natsUrl);
 
-var js = nc.CreateJetStreamContext();
 
-//  Crea o actualiza el stream (si no existe lo crea)
 await js.CreateOrUpdateStreamAsync(new StreamConfig
 {
     Name = "PAGOS",
     Subjects = new[] { "pago.*" }
 });
-
-
 
 for (var contador = 0; contador < 50; contador++)
 {
@@ -33,21 +29,74 @@ for (var contador = 0; contador < 50; contador++)
         Contador = contador + 1
     };
 
-    var json = JsonSerializer.SerializeToUtf8Bytes(evento);
+    var payload = JsonSerializer.SerializeToUtf8Bytes(evento);
 
     try
     {
-        await js.PublishAsync(subject, json);
+        //  Publish con retry + reconexión si "No response"
+        (nc, js) = await PublishWithRetryAsync(natsUrl, nc, js, subject, payload);
         Console.WriteLine($"Publicado #{contador + 1}");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Falló publish #{contador + 1}: {ex.Message}");
+        Console.WriteLine($"Falló publish #{contador + 1}: {ex.GetType().Name} - {ex.Message}");
     }
 
     await Task.Delay(1000);
 }
 
+await nc.DisposeAsync();
+
+static async Task<(NatsConnection nc, INatsJSContext js)> ConnectAsync(string url)
+{
+    var nc = new NatsConnection(new NatsOpts
+    {
+        Url = url,
+        RequestTimeout = TimeSpan.FromSeconds(30), //  clave
+        // (Opcional) PingInterval, Reconnect, etc. dependen de versión
+    });
+
+    var js = nc.CreateJetStreamContext();
+    return (nc, js);
+}
+
+static async Task<(NatsConnection nc, INatsJSContext js)> PublishWithRetryAsync(
+    string url,
+    NatsConnection nc,
+    INatsJSContext js,
+    string subject,
+    byte[] payload)
+{
+    const int maxRetries = 3;
+
+    for (int attempt = 1; attempt <= maxRetries; attempt++)
+    {
+        try
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            await js.PublishAsync(subject, payload, cancellationToken: cts.Token);
+            return (nc, js); 
+        }
+        catch (NatsJSPublishNoResponseException) when (attempt < maxRetries)
+        {
+            try { await nc.DisposeAsync(); } catch { /* ignore */ }
+
+            await Task.Delay(250 * attempt); 
+            (nc, js) = await ConnectAsync(url);
+        }
+        catch (OperationCanceledException) when (attempt < maxRetries)
+        {
+            await Task.Delay(250 * attempt);
+        }
+    }
+
+    using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
+    {
+        await js.PublishAsync(subject, payload, cancellationToken: cts.Token);
+    }
+
+    return (nc, js);
+}
 
 public sealed class PagoConfirmadoEvent
 {
