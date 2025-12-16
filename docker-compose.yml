@@ -1,0 +1,25 @@
+version: '3.4'
+services:
+  nats:
+    image: nats:2.10
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: ["-js"]
+
+  subscriber:
+    build:
+      context: ./NatsSubscriber
+    depends_on:
+      - nats
+    environment:
+      - NATS_URL=nats://nats:4222
+
+  publisher:
+    build:
+      context: ./NatsPublisher
+    depends_on:
+      - nats
+    environment:
+      - NATS_URL=nats://nats:4222
+    restart: "no
