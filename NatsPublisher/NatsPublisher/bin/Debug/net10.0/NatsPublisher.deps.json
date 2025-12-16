@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v10.0": {
       "NatsPublisher/1.0.0": {
         "dependencies": {
-          "NATS.Client.Core": "2.6.12"
+          "NATS.Client.Core": "2.6.12",
+          "NATS.Client.JetStream": "2.6.12"
         },
         "runtime": {
           "NatsPublisher.dll": {}
@@ -37,6 +38,17 @@
         },
         "runtime": {
           "lib/net8.0/NATS.Client.Core.dll": {
+            "assemblyVersion": "2.6.12.0",
+            "fileVersion": "2.6.12.0"
+          }
+        }
+      },
+      "NATS.Client.JetStream/2.6.12": {
+        "dependencies": {
+          "NATS.Client.Core": "2.6.12"
+        },
+        "runtime": {
+          "lib/net8.0/NATS.Client.JetStream.dll": {
             "assemblyVersion": "2.6.12.0",
             "fileVersion": "2.6.12.0"
           }
@@ -70,6 +82,13 @@
       "sha512": "sha512-ySGVv6qqhkce9qMIWlnwDWjdj7OwvDb0E7i9if4tnzy9b7ygVUzvS9lnNVo7GVspbfbhT/vZg96QQJoCnMMPPQ==",
       "path": "nats.client.core/2.6.12",
       "hashPath": "nats.client.core.2.6.12.nupkg.sha512"
+    },
+    "NATS.Client.JetStream/2.6.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-EreNxHXDqatIZXKyhYgzyjwi7lShMM7T6DF7bfDTlGgwN75FBA0ebgYnyA2ovNUBtERepFqtl4fiZJEbvWQrbw==",
+      "path": "nats.client.jetstream/2.6.12",
+      "hashPath": "nats.client.jetstream.2.6.12.nupkg.sha512"
     }
   }
 }

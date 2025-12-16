@@ -29,23 +29,23 @@ namespace NatsSubscriber
             // 1) Asegura stream
             await js.CreateOrUpdateStreamAsync(new StreamConfig
             {
-                Name = "TEST",
-                Subjects = new[] { "test.pruebas" }
+                Name = "PAGOS",
+                Subjects = new[] { "pago.pruebas" }
             }, cancellationToken: stoppingToken);
 
 
             // 2) Crea/actualiza consumer DURABLE correctamente
             var consumerCfg = new ConsumerConfig
             {
-                Name = "SUB_TEST",              // 👈 importante (nombre del consumer)
-                DurableName = "SUB_TEST",       // 👈 importante (durable)
-                FilterSubject = subject,        // 👈 solo este subject
+                Name = "SUB_TEST",              
+                DurableName = "SUB_TEST",       
+                FilterSubject = subject,       
                 AckPolicy = ConsumerConfigAckPolicy.Explicit,
                 DeliverPolicy = ConsumerConfigDeliverPolicy.All
             };
 
             var consumer = await js.CreateOrUpdateConsumerAsync(
-             stream: "TEST",
+             stream: "PAGO",
              config: consumerCfg,
              cancellationToken: stoppingToken);
 

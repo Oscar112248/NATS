@@ -35,15 +35,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "NatsPublisher",
+              "Title": "NatsPublisher.csproj",
               "DocumentMoniker": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsPublisher\\NatsPublisher\\NatsPublisher.csproj",
               "RelativeDocumentMoniker": "NatsPublisher\\NatsPublisher.csproj",
               "ToolTip": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsPublisher\\NatsPublisher\\NatsPublisher.csproj",
               "RelativeToolTip": "NatsPublisher\\NatsPublisher.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-12-16T16:10:57.138Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-16T16:10:57.138Z"
             },
             {
               "$type": "Document",
@@ -53,7 +52,7 @@
               "RelativeDocumentMoniker": "NatsPublisher\\Program.cs",
               "ToolTip": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsPublisher\\NatsPublisher\\Program.cs",
               "RelativeToolTip": "NatsPublisher\\Program.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABgAAAAkAAAAAAAAAA==",
+              "ViewState": "AgIAABEAAAAAAAAAAAAYwBgAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-16T14:40:18.391Z",
               "EditorCaption": ""
