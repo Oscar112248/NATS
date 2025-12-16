@@ -13,23 +13,32 @@ var evento = new PagoConfirmadoEvent
     Monto = 12.50m,
     Moneda = "USD",
     Fecha = DateTime.UtcNow,
-    Canal = "WEB"
+    Canal = "WEB",
+    Contador =0
 };
 await using var nc = new NatsConnection(new NatsOpts { Url = natsUrl });
 
-var js = nc.CreateJetStreamContext(); 
+var js = nc.CreateJetStreamContext();
 
 //  Crea o actualiza el stream (si no existe lo crea)
 await js.CreateOrUpdateStreamAsync(new StreamConfig
 {
     Name = "PAGOS",
     Subjects = new[] { "pago.*" }
-}); 
+});
 
 var json = JsonSerializer.SerializeToUtf8Bytes(evento);
 
-// Publicar persistente
-await js.PublishAsync(subject, json);
+var contador = 0;
+while (contador != 50)
+{
+    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+   string mensaje = $"Publicando evento de pago confirmado #{contador + 1}";
+    // Publicar persistente
+    await js.PublishAsync(subject, mensaje, cancellationToken: cts.Token);
+    await Task.Delay(1000);
+    contador++;
+}
 
 
 public sealed class PagoConfirmadoEvent
@@ -39,4 +48,5 @@ public sealed class PagoConfirmadoEvent
     public string Moneda { get; set; } = "USD";
     public DateTime Fecha { get; set; }
     public string Canal { get; set; } = "WEB";
-}
+    public int Contador { get; set; }
+    }
