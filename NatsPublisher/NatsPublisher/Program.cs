@@ -6,7 +6,7 @@ using System.Text.Json;
 
 var natsUrl = Environment.GetEnvironmentVariable("NATS_URL")
               ?? "nats://172.22.4.106:4222";
-var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "test.saludo";
+var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
 var evento = new PagoConfirmadoEvent
 {
     Referencia = Guid.NewGuid().ToString("N"),
