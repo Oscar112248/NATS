@@ -4,13 +4,28 @@ using NATS.Client.JetStream.Models;
 using NATS.Net;
 using System.Text.Json;
 
-var natsUrl = Environment.GetEnvironmentVariable("NATS_URL")
-              ?? "nats://nats:4222"; // puede ser el nombre del servicio nats o la ip
+var natsUrl = Environment.GetEnvironmentVariable("NATS_URL") ?? "nats://nats:4222";
 var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
 
-(NatsConnection nc, INatsJSContext js) = await ConnectAsync(natsUrl);
+async Task<(NatsConnection nc, INatsJSContext js)> ConnectAsync()
+{
+    var nc = new NatsConnection(new NatsOpts
+    {
+        Url = natsUrl,
+        RequestTimeout = TimeSpan.FromSeconds(30), // 👈 importante para PubAck
+    });
 
+    var js = nc.CreateJetStreamContext();
 
+    // “Warm up” de la conexión (evita estados raros al primer request)
+    await nc.PingAsync();
+
+    return (nc, js);
+}
+
+var (nc, js) = await ConnectAsync();
+
+// Para pruebas OK. En prod: muévelo a un init job/flag.
 await js.CreateOrUpdateStreamAsync(new StreamConfig
 {
     Name = "PAGOS",
@@ -31,72 +46,43 @@ for (var contador = 0; contador < 50; contador++)
 
     var payload = JsonSerializer.SerializeToUtf8Bytes(evento);
 
-    try
+    var published = false;
+    var attempt = 0;
+
+    while (!published && attempt < 3)
     {
-        //  Publish con retry + reconexión si "No response"
-        (nc, js) = await PublishWithRetryAsync(natsUrl, nc, js, subject, payload);
-        Console.WriteLine($"Publicado #{contador + 1}");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Falló publish #{contador + 1}: {ex.GetType().Name} - {ex.Message}");
+        attempt++;
+
+        try
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            await js.PublishAsync(subject, payload, cancellationToken: cts.Token);
+
+            Console.WriteLine($"Publicado #{contador + 1} (intento {attempt})");
+            published = true;
+        }
+        catch (NatsJSPublishNoResponseException ex)
+        {
+            Console.WriteLine($"No response en #{contador + 1} (intento {attempt}). Reconectando... {ex.Message}");
+
+            // Reconecta y reintenta
+            try { await nc.DisposeAsync(); } catch { /* ignore */ }
+            (nc, js) = await ConnectAsync();
+
+            // (opcional) pequeño backoff
+            await Task.Delay(300 * attempt);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Falló publish #{contador + 1} (intento {attempt}): {ex.GetType().Name} - {ex.Message}");
+            await Task.Delay(300 * attempt);
+        }
     }
 
     await Task.Delay(1000);
 }
 
 await nc.DisposeAsync();
-
-static async Task<(NatsConnection nc, INatsJSContext js)> ConnectAsync(string url)
-{
-    var nc = new NatsConnection(new NatsOpts
-    {
-        Url = url,
-        RequestTimeout = TimeSpan.FromSeconds(30), //  clave
-        // (Opcional) PingInterval, Reconnect, etc. dependen de versión
-    });
-
-    var js = nc.CreateJetStreamContext();
-    return (nc, js);
-}
-
-static async Task<(NatsConnection nc, INatsJSContext js)> PublishWithRetryAsync(
-    string url,
-    NatsConnection nc,
-    INatsJSContext js,
-    string subject,
-    byte[] payload)
-{
-    const int maxRetries = 3;
-
-    for (int attempt = 1; attempt <= maxRetries; attempt++)
-    {
-        try
-        {
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-            await js.PublishAsync(subject, payload, cancellationToken: cts.Token);
-            return (nc, js); 
-        }
-        catch (NatsJSPublishNoResponseException) when (attempt < maxRetries)
-        {
-            try { await nc.DisposeAsync(); } catch { /* ignore */ }
-
-            await Task.Delay(250 * attempt); 
-            (nc, js) = await ConnectAsync(url);
-        }
-        catch (OperationCanceledException) when (attempt < maxRetries)
-        {
-            await Task.Delay(250 * attempt);
-        }
-    }
-
-    using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
-    {
-        await js.PublishAsync(subject, payload, cancellationToken: cts.Token);
-    }
-
-    return (nc, js);
-}
 
 public sealed class PagoConfirmadoEvent
 {
