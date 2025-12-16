@@ -69,16 +69,14 @@ for (var contador = 0; contador < 50; contador++)
             try { await nc.DisposeAsync(); } catch { /* ignore */ }
             (nc, js) = await ConnectAsync();
 
-            // (opcional) pequeño backoff
-            await Task.Delay(300 * attempt);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Falló publish #{contador + 1} (intento {attempt}): {ex.GetType().Name} - {ex.Message}");
-            await Task.Delay(300 * attempt);
+            await Task.Delay(2000);
         }
 
-        await Task.Delay(3000);
+        await Task.Delay(2000);
 
     }
 
