@@ -26,34 +26,45 @@ namespace NatsSubscriber
 
             var js = nc.CreateJetStreamContext();
 
-            // Stream (por si no existe)
+            // 1) Asegura stream
             await js.CreateOrUpdateStreamAsync(new StreamConfig
             {
                 Name = "TEST",
                 Subjects = new[] { "test.pruebas" }
-            });
+            }, cancellationToken: stoppingToken);
 
-            // Consumer durable (recuerda el progreso)
-            var consumer = await js.CreateOrUpdateConsumerAsync("TEST", new ConsumerConfig
+
+            // 2) Crea/actualiza consumer DURABLE correctamente
+            var consumerCfg = new ConsumerConfig
             {
-                DurableName = "SUB_TEST",
-                AckPolicy = ConsumerConfigAckPolicy.Explicit
-            }, stoppingToken);
+                Name = "SUB_TEST",              // 👈 importante (nombre del consumer)
+                DurableName = "SUB_TEST",       // 👈 importante (durable)
+                FilterSubject = subject,        // 👈 solo este subject
+                AckPolicy = ConsumerConfigAckPolicy.Explicit,
+                DeliverPolicy = ConsumerConfigDeliverPolicy.All
+            };
 
-            _logger.LogInformation(" Consumidor JetStream listo. Escuchando {Subject}", subject);
+            var consumer = await js.CreateOrUpdateConsumerAsync(
+             stream: "TEST",
+             config: consumerCfg,
+             cancellationToken: stoppingToken);
+
+            _logger.LogInformation("JetStream consumer listo. Stream=TEST Subject={Subject}", subject);
+
 
             await foreach (var msg in consumer.ConsumeAsync<string>(cancellationToken: stoppingToken))
             {
                 try
                 {
                     _logger.LogInformation("Recibido: {Msg}", msg.Data);
-                    await msg.AckAsync(); // ACK explícito (si no, reintenta)
+                    await msg.AckAsync(cancellationToken: stoppingToken);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error procesando (sin ACK => JetStream reintentará)");
+                    _logger.LogError(ex, "Error procesando (sin ACK => reintento)");
                 }
             }
+
 
         }
     }
