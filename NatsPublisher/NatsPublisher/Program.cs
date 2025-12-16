@@ -102,8 +102,14 @@ using System.Text;
 var natsUrl = Environment.GetEnvironmentVariable("NATS_URL") ?? "nats://nats:4222";
 var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
 
-Console.WriteLine($"Conectando a NATS: {natsUrl}");
-Console.WriteLine($"Publicando en subject: {subject}");
+// 👉 Leer mensaje desde argumentos
+if (args.Length == 0)
+{
+    Console.WriteLine("Uso: publisher \"mensaje a enviar\"");
+    return;
+}
+
+var mensaje = args[0];
 
 await using var nc = new NatsConnection(new NatsOpts
 {
@@ -113,38 +119,18 @@ await using var nc = new NatsConnection(new NatsOpts
 
 var js = nc.CreateJetStreamContext();
 
-// Para pruebas OK (en prod, crea el stream aparte)
+// Para pruebas (en prod no)
 await js.CreateOrUpdateStreamAsync(new StreamConfig
 {
     Name = "PAGOS",
     Subjects = new[] { "pago.*" }
 });
 
-Console.WriteLine("Escribe un mensaje y presiona Enter. Escribe 'exit' para salir.");
+var payload = Encoding.UTF8.GetBytes(mensaje);
 
-while (true)
-{
-    Console.Write("> ");
-    var line = Console.ReadLine();
+await js.PublishAsync(subject, payload);
 
-    if (string.IsNullOrWhiteSpace(line))
-        continue;
+Console.WriteLine($"✅ Mensaje enviado: {mensaje}");
 
-    if (line.Equals("exit", StringComparison.OrdinalIgnoreCase))
-        break;
-
-    var payload = Encoding.UTF8.GetBytes(line);
-
-    try
-    {
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-        await js.PublishAsync(subject, payload, cancellationToken: cts.Token);
-        Console.WriteLine(" Enviado");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($" Error publicando: {ex.GetType().Name} - {ex.Message}");
-    }
-}
 
 
