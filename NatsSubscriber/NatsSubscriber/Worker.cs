@@ -18,7 +18,7 @@ namespace NatsSubscriber
         {
             var natsUrl = Environment.GetEnvironmentVariable("NATS_URL")
                           ?? "nats://172.22.4.106:4222";
-            var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "test.saludo";
+            var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
 
 
             _logger.LogInformation("Conectando a NATS en {Url}", natsUrl);
@@ -45,7 +45,7 @@ namespace NatsSubscriber
             };
 
             var consumer = await js.CreateOrUpdateConsumerAsync(
-             stream: "PAGO",
+             stream: "PAGOS",
              config: consumerCfg,
              cancellationToken: stoppingToken);
 
