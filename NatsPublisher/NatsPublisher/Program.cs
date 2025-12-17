@@ -3,33 +3,25 @@ using NATS.Client.JetStream;
 using NATS.Client.JetStream.Models;
 using NATS.Net;
 using System.Text.Json;
+using System.Threading;
 
 var natsUrl = Environment.GetEnvironmentVariable("NATS_URL") ?? "nats://nats:4222";
 var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
 
-await using var nc = new NatsConnection(new NatsOpts
-{
-    Url = natsUrl,
-    RequestTimeout = TimeSpan.FromSeconds(30), // timeout base para PubAck / requests
-});
+// Guardamos conexión/contexto como “actuales”
+NatsConnection nc = await CreateConnectionAsync();
+INatsJSContext js = nc.CreateJetStreamContext();
 
-// JetStream context (extensión del paquete NATS.Client.JetStream)
-var js = nc.CreateJetStreamContext();
+// Para evitar que 2 reconexiones se pisen (aunque hoy sea 1 solo publisher, esto te blinda)
+var reconnectLock = new SemaphoreSlim(1, 1);
 
 // Warm-up
 await nc.PingAsync();
+await EnsureStreamAsync(js);
 
-// Stream (para pruebas OK; en prod muévelo a un init/seed)
-await js.CreateOrUpdateStreamAsync(new StreamConfig
-{
-    Name = "PAGOS",
-    Subjects = new[] { "pago.*" },
-    Storage = StreamConfigStorage.File // más estable que Memory en Docker
-});
+Console.WriteLine($"✅ Listo. Publicando a '{subject}' en {natsUrl}");
 
-Console.WriteLine($"Conectado a {natsUrl}. Publicando a subject '{subject}' ...");
-
-for (var contador = 0; contador < 50; contador++)
+for (var contador = 0; contador < 500; contador++)
 {
     var evento = new PagoConfirmadoEvent
     {
@@ -43,42 +35,148 @@ for (var contador = 0; contador < 50; contador++)
 
     var payload = JsonSerializer.SerializeToUtf8Bytes(evento);
 
-    var publicado = false;
+    var ok = await PublishWithRecoveryAsync(
+        subject,
+        payload,
+        maxAttempts: 6,                 // más intentos porque el problema es intermitente
+        perAttemptTimeoutSeconds: 30,
+        onLog: Console.WriteLine);
 
-    for (var attempt = 1; attempt <= 3 && !publicado; attempt++)
+    if (!ok)
     {
-        try
-        {
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-
-            // Publica a JetStream (espera PubAck)
-            await js.PublishAsync(subject, payload, cancellationToken: cts.Token);
-
-            Console.WriteLine($"Publicado #{contador + 1} (intento {attempt})");
-            publicado = true;
-        }
-        catch (OperationCanceledException)
-        {
-            Console.WriteLine($"Timeout publish #{contador + 1} (intento {attempt}). Reintentando...");
-            await Task.Delay(1000 * attempt);
-        }
-        catch (NatsJSPublishNoResponseException ex)
-        {
-            Console.WriteLine($"No response #{contador + 1} (intento {attempt}): {ex.Message}");
-            await Task.Delay(1000 * attempt);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Falló publish #{contador + 1} (intento {attempt}): {ex.GetType().Name} - {ex.Message}");
-            await Task.Delay(1000 * attempt);
-        }
+        Console.WriteLine($"❌ No se pudo publicar #{contador + 1} luego de reintentos. Cortando proceso.");
+        break;
     }
 
-    // pausa entre mensajes (ajústala)
+    Console.WriteLine($"Publicado #{contador + 1}");
     await Task.Delay(3000);
 }
 
-Console.WriteLine("Listo. Saliendo...");
+await nc.DisposeAsync();
+Console.WriteLine("✅ Fin.");
+
+// -------------------- helpers --------------------
+
+async Task<NatsConnection> CreateConnectionAsync()
+{
+    var conn = new NatsConnection(new NatsOpts
+    {
+        Url = natsUrl,
+        RequestTimeout = TimeSpan.FromSeconds(30),
+    });
+
+    // Ping para validar que hay canal
+    await conn.PingAsync();
+    return conn;
+}
+
+async Task EnsureStreamAsync(INatsJSContext jsLocal)
+{
+    // Crea/actualiza el stream (si JetStream aún recupera estado, puede fallar -> reintenta)
+    for (int i = 1; i <= 10; i++)
+    {
+        try
+        {
+            await jsLocal.CreateOrUpdateStreamAsync(new StreamConfig
+            {
+                Name = "PAGOS",
+                Subjects = new[] { "pago.*" },
+                Storage = StreamConfigStorage.File
+            });
+            return;
+        }
+        catch
+        {
+            await Task.Delay(1000 * i);
+        }
+    }
+
+    throw new Exception("No se pudo crear/actualizar el Stream PAGOS.");
+}
+
+async Task<bool> PublishWithRecoveryAsync(
+    string subj,
+    byte[] payload,
+    int maxAttempts,
+    int perAttemptTimeoutSeconds,
+    Action<string> onLog)
+{
+    for (int attempt = 1; attempt <= maxAttempts; attempt++)
+    {
+        try
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(perAttemptTimeoutSeconds));
+
+            // ✅ JetStream publish (espera PubAck)
+            await js.PublishAsync(subj, payload, cancellationToken: cts.Token);
+            return true;
+        }
+        catch (Exception ex) when (
+            ex is OperationCanceledException ||
+            ex is NatsJSPublishNoResponseException ||
+            ex is NatsJSException ||
+            ex is NatsException)
+        {
+            onLog($"⚠️ Publish falló (intento {attempt}/{maxAttempts}): {ex.GetType().Name} - {ex.Message}");
+
+            // Backoff progresivo
+            await Task.Delay(500 * attempt);
+
+            // Si fue un bache, reintentar suele bastar.
+            // Pero si ya vamos en intentos 3+ y sigue fallando,
+            // hacemos “recovery” (recrear JS y si hace falta reconectar).
+            if (attempt == 3 || attempt == 5)
+            {
+                await RecoverAsync(onLog);
+            }
+        }
+    }
+
+    return false;
+}
+
+async Task RecoverAsync(Action<string> onLog)
+{
+    await reconnectLock.WaitAsync();
+    try
+    {
+        onLog("🔄 Recovery: verificando conexión/JetStream...");
+
+        // 1) Si la conexión aún responde al ping, recrea solo el JS context
+        try
+        {
+            await nc.PingAsync();
+            js = nc.CreateJetStreamContext();
+            // valida JetStream
+            await js.GetAccountInfoAsync();
+            onLog("✅ Recovery OK: JetStream responde (recreado JS context).");
+            return;
+        }
+        catch
+        {
+            // continua a reconectar
+        }
+
+        // 2) Reconexión completa (segura)
+        onLog("🔁 Recovery: recreando conexión completa...");
+        var old = nc;
+
+        nc = await CreateConnectionAsync();
+        js = nc.CreateJetStreamContext();
+
+        // Asegura stream (por si es un arranque raro)
+        await EnsureStreamAsync(js);
+
+        // Cierra vieja conexión al final, ya con nueva lista
+        try { await old.DisposeAsync(); } catch { /* ignore */ }
+
+        onLog("✅ Recovery OK: conexión recreada.");
+    }
+    finally
+    {
+        reconnectLock.Release();
+    }
+}
 
 public sealed class PagoConfirmadoEvent
 {
@@ -89,8 +187,6 @@ public sealed class PagoConfirmadoEvent
     public string Canal { get; set; } = "WEB";
     public int Contador { get; set; }
 }
-
-
 
 //using NATS.Client.Core;
 //using NATS.Client.JetStream;
