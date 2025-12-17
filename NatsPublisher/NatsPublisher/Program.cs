@@ -12,12 +12,12 @@ async Task<(NatsConnection nc, INatsJSContext js)> ConnectAsync()
     var nc = new NatsConnection(new NatsOpts
     {
         Url = natsUrl,
-        RequestTimeout = TimeSpan.FromSeconds(30), // 👈 importante para PubAck
+        RequestTimeout = TimeSpan.FromSeconds(30), // importante para PubAck
     });
 
     var js = nc.CreateJetStreamContext();
 
-    // “Warm up” de la conexión (evita estados raros al primer request)
+ 
     await nc.PingAsync();
 
     return (nc, js);
@@ -25,68 +25,70 @@ async Task<(NatsConnection nc, INatsJSContext js)> ConnectAsync()
 
 var (nc, js) = await ConnectAsync();
 
-// Para pruebas OK. En prod: muévelo a un init job/flag.
+
 await js.CreateOrUpdateStreamAsync(new StreamConfig
 {
     Name = "PAGOS",
-    Subjects = new[] { "pago.*" }
+    Subjects = new[] { "pago.*" },
+    Storage = StreamConfigStorage.File, 
 });
 
-for (var contador = 0; contador < 50; contador++)
+await Task.Run(async () =>
 {
-    var evento = new PagoConfirmadoEvent
+    for (var contador = 0; contador < 50; contador++)
     {
-        Referencia = Guid.NewGuid().ToString("N"),
-        Monto = 12.50m,
-        Moneda = "USD",
-        Fecha = DateTime.UtcNow,
-        Canal = "WEB",
-        Contador = contador + 1
-    };
-
-    var payload = JsonSerializer.SerializeToUtf8Bytes(evento);
-
-    var published = false;
-    var attempt = 0;
-
-    while (!published && attempt < 3)
-    {
-        attempt++;
-
-        try
+        var evento = new PagoConfirmadoEvent
         {
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-            await js.PublishAsync(subject, payload, cancellationToken: cts.Token);
+            Referencia = Guid.NewGuid().ToString("N"),
+            Monto = 12.50m,
+            Moneda = "USD",
+            Fecha = DateTime.UtcNow,
+            Canal = "WEB",
+            Contador = contador + 1
+        };
 
-            Console.WriteLine($"Publicado #{contador + 1} (intento {attempt})");
-            published = true;
-        }
-        catch (NatsJSPublishNoResponseException ex)
+        var payload = JsonSerializer.SerializeToUtf8Bytes(evento);
+
+        for (var attempt = 1; attempt <= 3; attempt++)
         {
-            Console.WriteLine($"No response en #{contador + 1} (intento {attempt}). Reconectando... {ex.Message}");
-
-            // Reconecta y reintenta
-            try { await nc.DisposeAsync(); } catch
+            try
             {
-                Console.WriteLine($"Falló publish catch 1 #{contador + 1} (intento {attempt}): {ex.GetType().Name} - {ex.Message}");
-                await Task.Delay(2000);
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
+                await js.PublishAsync(subject, payload, cancellationToken: cts.Token);
+
+                Console.WriteLine($"Publicado #{contador + 1} (intento {attempt})");
+                break;
             }
-            (nc, js) = await ConnectAsync();
+            catch (NatsJSPublishNoResponseException ex)
+            {
+                Console.WriteLine($"No response #{contador + 1} (intento {attempt}). Reconectando... {ex.Message}");
 
+                try { await nc.DisposeAsync(); }
+                catch
+                {
+                    Console.WriteLine($"Error dispose #{contador + 1} (intento {attempt}). Reintentando...");
+                    await Task.Delay(3000);
+                }
+                (nc, js) = await ConnectAsync();
+
+                await Task.Delay(3000);
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine($"Timeout publish #{contador + 1} (intento {attempt}). Reintentando...");
+                await Task.Delay(3000);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Falló publish #{contador + 1} (intento {attempt}): {ex.GetType().Name} - {ex.Message}");
+                await Task.Delay(3000);
+            }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Falló publish #{contador + 1} (intento {attempt}): {ex.GetType().Name} - {ex.Message}");
-            await Task.Delay(2000);
-        }
-
-        await Task.Delay(3000);
-
     }
 
-}
-
-await nc.DisposeAsync();
+    await nc.DisposeAsync();
+});
 
 public sealed class PagoConfirmadoEvent
 {
