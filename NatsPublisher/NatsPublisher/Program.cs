@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading;
 
 var natsUrl = Environment.GetEnvironmentVariable("NATS_URL") ?? "nats://nats:4222";
-var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.*";
+var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
 
 // Guardamos conexión/contexto como “actuales”
 NatsConnection nc = await CreateConnectionAsync();
