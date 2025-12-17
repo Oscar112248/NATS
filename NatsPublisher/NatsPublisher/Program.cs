@@ -7,88 +7,78 @@ using System.Text.Json;
 var natsUrl = Environment.GetEnvironmentVariable("NATS_URL") ?? "nats://nats:4222";
 var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
 
-async Task<(NatsConnection nc, INatsJSContext js)> ConnectAsync()
+await using var nc = new NatsConnection(new NatsOpts
 {
-    var nc = new NatsConnection(new NatsOpts
-    {
-        Url = natsUrl,
-        RequestTimeout = TimeSpan.FromSeconds(30), // importante para PubAck
-    });
+    Url = natsUrl,
+    RequestTimeout = TimeSpan.FromSeconds(30), // timeout base para PubAck / requests
+});
 
-    var js = nc.CreateJetStreamContext();
+// JetStream context (extensión del paquete NATS.Client.JetStream)
+var js = nc.CreateJetStreamContext();
 
- 
-    await nc.PingAsync();
+// Warm-up
+await nc.PingAsync();
 
-    return (nc, js);
-}
-
-var (nc, js) = await ConnectAsync();
-
-
+// Stream (para pruebas OK; en prod muévelo a un init/seed)
 await js.CreateOrUpdateStreamAsync(new StreamConfig
 {
     Name = "PAGOS",
     Subjects = new[] { "pago.*" },
-    Storage = StreamConfigStorage.File, 
+    Storage = StreamConfigStorage.File // más estable que Memory en Docker
 });
 
-await Task.Run(async () =>
+Console.WriteLine($"Conectado a {natsUrl}. Publicando a subject '{subject}' ...");
+
+for (var contador = 0; contador < 50; contador++)
 {
-    for (var contador = 0; contador < 50; contador++)
+    var evento = new PagoConfirmadoEvent
     {
-        var evento = new PagoConfirmadoEvent
+        Referencia = Guid.NewGuid().ToString("N"),
+        Monto = 12.50m,
+        Moneda = "USD",
+        Fecha = DateTime.UtcNow,
+        Canal = "WEB",
+        Contador = contador + 1
+    };
+
+    var payload = JsonSerializer.SerializeToUtf8Bytes(evento);
+
+    var publicado = false;
+
+    for (var attempt = 1; attempt <= 3 && !publicado; attempt++)
+    {
+        try
         {
-            Referencia = Guid.NewGuid().ToString("N"),
-            Monto = 12.50m,
-            Moneda = "USD",
-            Fecha = DateTime.UtcNow,
-            Canal = "WEB",
-            Contador = contador + 1
-        };
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
-        var payload = JsonSerializer.SerializeToUtf8Bytes(evento);
+            // Publica a JetStream (espera PubAck)
+            await js.PublishAsync(subject, payload, cancellationToken: cts.Token);
 
-        for (var attempt = 1; attempt <= 3; attempt++)
+            Console.WriteLine($"Publicado #{contador + 1} (intento {attempt})");
+            publicado = true;
+        }
+        catch (OperationCanceledException)
         {
-            try
-            {
-                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-
-                await js.PublishAsync(subject, payload, cancellationToken: cts.Token);
-
-                Console.WriteLine($"Publicado #{contador + 1} (intento {attempt})");
-                break;
-            }
-            catch (NatsJSPublishNoResponseException ex)
-            {
-                Console.WriteLine($"No response #{contador + 1} (intento {attempt}). Reconectando... {ex.Message}");
-
-                try { await nc.DisposeAsync(); }
-                catch
-                {
-                    Console.WriteLine($"Error dispose #{contador + 1} (intento {attempt}). Reintentando...");
-                    await Task.Delay(3000);
-                }
-                (nc, js) = await ConnectAsync();
-
-                await Task.Delay(3000);
-            }
-            catch (OperationCanceledException)
-            {
-                Console.WriteLine($"Timeout publish #{contador + 1} (intento {attempt}). Reintentando...");
-                await Task.Delay(3000);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Falló publish #{contador + 1} (intento {attempt}): {ex.GetType().Name} - {ex.Message}");
-                await Task.Delay(3000);
-            }
+            Console.WriteLine($"Timeout publish #{contador + 1} (intento {attempt}). Reintentando...");
+            await Task.Delay(1000 * attempt);
+        }
+        catch (NatsJSPublishNoResponseException ex)
+        {
+            Console.WriteLine($"No response #{contador + 1} (intento {attempt}): {ex.Message}");
+            await Task.Delay(1000 * attempt);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Falló publish #{contador + 1} (intento {attempt}): {ex.GetType().Name} - {ex.Message}");
+            await Task.Delay(1000 * attempt);
         }
     }
 
-    await nc.DisposeAsync();
-});
+    // pausa entre mensajes (ajústala)
+    await Task.Delay(3000);
+}
+
+Console.WriteLine("Listo. Saliendo...");
 
 public sealed class PagoConfirmadoEvent
 {
@@ -99,6 +89,7 @@ public sealed class PagoConfirmadoEvent
     public string Canal { get; set; } = "WEB";
     public int Contador { get; set; }
 }
+
 
 
 //using NATS.Client.Core;
