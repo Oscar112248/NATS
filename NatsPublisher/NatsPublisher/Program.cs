@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading;
 
 var natsUrl = Environment.GetEnvironmentVariable("NATS_URL") ?? "nats://nats:4222";
-var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
+var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.*";
 
 // Guardamos conexión/contexto como “actuales”
 NatsConnection nc = await CreateConnectionAsync();
@@ -19,7 +19,7 @@ var reconnectLock = new SemaphoreSlim(1, 1);
 await nc.PingAsync();
 await EnsureStreamAsync(js);
 
-Console.WriteLine($"✅ Listo. Publicando a '{subject}' en {natsUrl}");
+Console.WriteLine($"Listo. Publicando a '{subject}' en {natsUrl}");
 
 for (var contador = 0; contador < 500; contador++)
 {
@@ -44,16 +44,16 @@ for (var contador = 0; contador < 500; contador++)
 
     if (!ok)
     {
-        Console.WriteLine($"❌ No se pudo publicar #{contador + 1} luego de reintentos. Cortando proceso.");
+        Console.WriteLine($"No se pudo publicar #{contador + 1} luego de reintentos. Cortando proceso.");
         break;
     }
 
     Console.WriteLine($"Publicado #{contador + 1}");
-    await Task.Delay(3000);
+    await Task.Delay(1000);
 }
 
 await nc.DisposeAsync();
-Console.WriteLine("✅ Fin.");
+Console.WriteLine("Fin.");
 
 // -------------------- helpers --------------------
 
@@ -107,7 +107,7 @@ async Task<bool> PublishWithRecoveryAsync(
         {
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(perAttemptTimeoutSeconds));
 
-            // ✅ JetStream publish (espera PubAck)
+            // JetStream publish (espera PubAck)
             await js.PublishAsync(subj, payload, cancellationToken: cts.Token);
             return true;
         }
@@ -117,7 +117,7 @@ async Task<bool> PublishWithRecoveryAsync(
             ex is NatsJSException ||
             ex is NatsException)
         {
-            onLog($"⚠️ Publish falló (intento {attempt}/{maxAttempts}): {ex.GetType().Name} - {ex.Message}");
+            onLog($"Publish falló (intento {attempt}/{maxAttempts}): {ex.GetType().Name} - {ex.Message}");
 
             // Backoff progresivo
             await Task.Delay(500 * attempt);
@@ -140,7 +140,7 @@ async Task RecoverHardAsync(Action<string> onLog)
     await reconnectLock.WaitAsync();
     try
     {
-        onLog("🔁 Recovery HARD: recreando conexión completa...");
+        onLog("Recovery HARD: recreando conexión completa...");
 
         var old = nc;
 
@@ -155,7 +155,7 @@ async Task RecoverHardAsync(Action<string> onLog)
 
         try { await old.DisposeAsync(); } catch { /* ignore */ }
 
-        onLog("✅ Recovery HARD OK.");
+        onLog("Recovery HARD OK.");
     }
     finally
     {
