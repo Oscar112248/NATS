@@ -127,7 +127,7 @@ async Task<bool> PublishWithRecoveryAsync(
             // hacemos “recovery” (recrear JS y si hace falta reconectar).
             if (attempt == 3 || attempt == 5)
             {
-                await RecoverAsync(onLog);
+                await RecoverHardAsync(onLog);
             }
         }
     }
@@ -135,49 +135,33 @@ async Task<bool> PublishWithRecoveryAsync(
     return false;
 }
 
-async Task RecoverAsync(Action<string> onLog)
+async Task RecoverHardAsync(Action<string> onLog)
 {
     await reconnectLock.WaitAsync();
     try
     {
-        onLog("🔄 Recovery: verificando conexión/JetStream...");
+        onLog("🔁 Recovery HARD: recreando conexión completa...");
 
-        // 1) Si la conexión aún responde al ping, recrea solo el JS context
-        try
-        {
-            await nc.PingAsync();
-            js = nc.CreateJetStreamContext();
-            // valida JetStream
-            await js.GetAccountInfoAsync();
-            onLog("✅ Recovery OK: JetStream responde (recreado JS context).");
-            return;
-        }
-        catch
-        {
-            // continua a reconectar
-        }
-
-        // 2) Reconexión completa (segura)
-        onLog("🔁 Recovery: recreando conexión completa...");
         var old = nc;
 
-        nc = await CreateConnectionAsync();
+        nc = await CreateConnectionAsync();        // ping adentro
         js = nc.CreateJetStreamContext();
 
-        // Asegura stream (por si es un arranque raro)
+        // opcional: validar JetStream API antes de seguir
+        await js.GetAccountInfoAsync();
+
+        // opcional: asegurar stream
         await EnsureStreamAsync(js);
 
-        // Cierra vieja conexión al final, ya con nueva lista
         try { await old.DisposeAsync(); } catch { /* ignore */ }
 
-        onLog("✅ Recovery OK: conexión recreada.");
+        onLog("✅ Recovery HARD OK.");
     }
     finally
     {
         reconnectLock.Release();
     }
 }
-
 public sealed class PagoConfirmadoEvent
 {
     public string Referencia { get; set; } = default!;
