@@ -32,7 +32,7 @@ namespace NatsSubscriber
             // 1) Asegura stream
             await js.CreateOrUpdateStreamAsync(new StreamConfig
             {
-                Name = "PAGOS",
+                Name = "SUB_PAGOS_DINERS",
                 Subjects = new[] { "pago.saludo" }
             }, cancellationToken: stoppingToken);
 
@@ -40,6 +40,7 @@ namespace NatsSubscriber
             // 2) Crea/actualiza consumer DURABLE correctamente
             var consumerCfg = new ConsumerConfig
             {
+                Name= "SUB_PAGOS_DINERS",
                 DurableName = durable,
                 FilterSubject = subject,
                 AckPolicy = ConsumerConfigAckPolicy.Explicit,
