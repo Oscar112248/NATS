@@ -3,8 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsSubscriber\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{EC916E71-4EF3-44C2-98D0-DD55425A1565}|NatsSubscriber2\\NatsSubscriber2.csproj|c:\\users\\omaldonado\\documents\\sao documentacion\\nats\\nats git\\nats\\natssubscriber\\natssubscriber2\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EC916E71-4EF3-44C2-98D0-DD55425A1565}|NatsSubscriber2\\NatsSubscriber2.csproj|solutionrelative:natssubscriber2\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{346A56F4-1F82-3DCD-079D-79D321519F00}|NatsSubscriber\\NatsSubscriber.csproj|c:\\users\\omaldonado\\documents\\sao documentacion\\nats\\nats git\\nats\\natssubscriber\\natssubscriber\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{346A56F4-1F82-3DCD-079D-79D321519F00}|NatsSubscriber\\NatsSubscriber.csproj|solutionrelative:natssubscriber\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{346A56F4-1F82-3DCD-079D-79D321519F00}|NatsSubscriber\\NatsSubscriber.csproj|c:\\users\\omaldonado\\documents\\sao documentacion\\nats\\nats git\\nats\\natssubscriber\\natssubscriber\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{346A56F4-1F82-3DCD-079D-79D321519F00}|NatsSubscriber\\NatsSubscriber.csproj|solutionrelative:natssubscriber\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -32,11 +40,37 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Worker.cs",
+              "DocumentMoniker": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsSubscriber\\NatsSubscriber2\\Worker.cs",
+              "RelativeDocumentMoniker": "NatsSubscriber2\\Worker.cs",
+              "ToolTip": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsSubscriber\\NatsSubscriber2\\Worker.cs",
+              "RelativeToolTip": "NatsSubscriber2\\Worker.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAB0AAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T19:37:43.585Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsSubscriber\\NatsSubscriber\\Dockerfile",
+              "RelativeDocumentMoniker": "NatsSubscriber\\Dockerfile",
+              "ToolTip": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsSubscriber\\NatsSubscriber\\Dockerfile",
+              "RelativeToolTip": "NatsSubscriber\\Dockerfile",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-12-18T19:37:03.203Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Worker.cs",
               "DocumentMoniker": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsSubscriber\\NatsSubscriber\\Worker.cs",
               "RelativeDocumentMoniker": "NatsSubscriber\\Worker.cs",
               "ToolTip": "C:\\Users\\omaldonado\\Documents\\SAO Documentacion\\NATS\\NATS GIT\\NATS\\NatsSubscriber\\NatsSubscriber\\Worker.cs",
               "RelativeToolTip": "NatsSubscriber\\Worker.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADoAAABBAAAAAAAAAA==",
+              "ViewState": "AgIAACIAAAAAAAAAAAAwwEcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-16T16:17:49.762Z",
               "EditorCaption": ""

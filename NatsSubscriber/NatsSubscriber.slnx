@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="NatsSubscriber/NatsSubscriber.csproj" />
+  <Project Path="NatsSubscriber2/NatsSubscriber2.csproj" Id="ec916e71-4ef3-44c2-98d0-dd55425a1565" />
 </Solution>

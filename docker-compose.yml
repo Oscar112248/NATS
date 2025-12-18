@@ -15,6 +15,14 @@ services:
     environment:
       - NATS_URL=nats://nats:4222
 
+  subscriber2:
+    build:
+      context: ./NatsSubscriber2/NatsSubscriber2
+    depends_on:
+      - nats
+    environment:
+      - NATS_URL=nats://nats:4222
+
   publisher:
     build:
       context: ./NatsPublisher/NatsPublisher

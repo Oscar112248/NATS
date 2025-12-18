@@ -37,8 +37,8 @@ namespace NatsSubscriber
             // 2) Crea/actualiza consumer DURABLE correctamente
             var consumerCfg = new ConsumerConfig
             {
-                Name = "SUB_TEST",              
-                DurableName = "SUB_TEST",       
+                Name = "SUB_PAGOS",              
+                DurableName = "SUB_PAGOS_DINERS",       
                 FilterSubject = subject,       
                 AckPolicy = ConsumerConfigAckPolicy.Explicit,
                 DeliverPolicy = ConsumerConfigDeliverPolicy.All
@@ -49,7 +49,7 @@ namespace NatsSubscriber
              config: consumerCfg,
              cancellationToken: stoppingToken);
 
-            _logger.LogInformation("JetStream consumer listo. Stream=PAGOS Subject={Subject}", subject);
+            _logger.LogInformation("JetStream consumer 1 listo. Stream=PAGOS Subject={Subject}", subject);
 
 
             await foreach (var msg in consumer.ConsumeAsync<string>(cancellationToken: stoppingToken))
