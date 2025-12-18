@@ -37,9 +37,8 @@ namespace NatsSubscriber
             // 2) Crea/actualiza consumer DURABLE correctamente
             var consumerCfg = new ConsumerConfig
             {
-                Name = "SUB_PAGOS",              
-                DurableName = "SUB_PAGOS_DINERS",       
-                FilterSubject = subject,       
+                DurableName = subject,
+                FilterSubject = subject,
                 AckPolicy = ConsumerConfigAckPolicy.Explicit,
                 DeliverPolicy = ConsumerConfigDeliverPolicy.All
             };

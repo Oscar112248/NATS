@@ -17,13 +17,17 @@ services:
       - nats
     environment:
       - NATS_URL=nats://nats:4222
+      - NATS_SUBJECT=pago.saludo
+      - NATS_DURABLE=SUB_PAGOS
   subscriber2:
     build:
-      context: ./NatsSubscriber2/NatsSubscriber2
+      context: ./NatsSubscriber/NatsSubscriber2
     depends_on:
       - nats
     environment:
       - NATS_URL=nats://nats:4222
+      - NATS_SUBJECT=pago.saludo
+      - NATS_DURABLE=SUB_PAGOS_DINERS
 
   publisher:
     build:

@@ -35,8 +35,7 @@ namespace NatsSubscriber2
 
             var consumerCfg = new ConsumerConfig
             {
-                Name = "SUB_PAGOS",
-                DurableName = "SUB_PAGOS_WEBHOOK",
+                DurableName = subject,
                 FilterSubject = subject,
                 AckPolicy = ConsumerConfigAckPolicy.Explicit,
                 DeliverPolicy = ConsumerConfigDeliverPolicy.All
