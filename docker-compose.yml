@@ -1,11 +1,14 @@
 version: '3.4'
+
 services:
   nats:
     image: nats:2.12.2
     ports:
       - "4222:4222"
       - "8222:8222"
-    command: ["-js"]
+    command: ["-js", "-m", "8222", "-sd", "/data"]
+    volumes:
+      - nats-data:/data
 
   subscriber:
     build:
@@ -14,7 +17,6 @@ services:
       - nats
     environment:
       - NATS_URL=nats://nats:4222
-
   subscriber2:
     build:
       context: ./NatsSubscriber2/NatsSubscriber2
@@ -31,3 +33,6 @@ services:
     environment:
       - NATS_URL=nats://nats:4222
     restart: "no"
+
+volumes:
+  nats-data:
