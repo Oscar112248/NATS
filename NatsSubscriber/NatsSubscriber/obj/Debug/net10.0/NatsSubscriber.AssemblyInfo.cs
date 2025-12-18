@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NatsSubscriber")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+adc25606ca8076fa7bec7a746b2db2881e703daa")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+596d23850746998b687162357516291e115a6180")]
 [assembly: System.Reflection.AssemblyProductAttribute("NatsSubscriber")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NatsSubscriber")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -21,10 +21,7 @@ namespace NatsSubscriber2
             var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
             var durable = Environment.GetEnvironmentVariable("NATS_DURABLE") ?? "SUB_PAGOS";
 
-            _logger.LogInformation("ENV NATS_URL={Url}", natsUrl);
-            _logger.LogInformation("ENV NATS_SUBJECT={Subject}", subject);
-            _logger.LogInformation("ENV NATS_DURABLE={Durable}", durable);
-
+           
             _logger.LogInformation("Conectando a NATS en {Url}", natsUrl);
             await using var nc = new NatsConnection(new NatsOpts { Url = natsUrl });
 
