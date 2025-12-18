@@ -10,7 +10,7 @@ namespace NatsSubscriber
         {
             var natsUrl = Environment.GetEnvironmentVariable("NATS_URL") ?? "nats://172.22.4.106:4222";
             var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.*";
-
+            var durableName = Environment.GetEnvironmentVariable("NATS_DURABLE") ?? "SUB_PAGOS_DINERS";
             _logger.LogInformation("Conectando a NATS en {Url}", natsUrl);
 
             await using var nc = new NatsConnection(new NatsOpts { Url = natsUrl });
@@ -30,8 +30,8 @@ namespace NatsSubscriber
             // 2) Crea/actualiza consumer DURABLE correctamente
             var consumerCfg = new ConsumerConfig
             {
-                Name = "PAGO_DINERS",
-                DurableName = "PAGO_DINERS",
+                Name = durableName,
+                DurableName = durableName,
                 FilterSubject = subject,
                 AckPolicy = ConsumerConfigAckPolicy.Explicit,
                 DeliverPolicy = ConsumerConfigDeliverPolicy.All
@@ -41,7 +41,7 @@ namespace NatsSubscriber
                 config: consumerCfg,
                 cancellationToken: stoppingToken);
 
-            _logger.LogInformation("JetStream consumer listo. Stream=PAGOS Subject={Subject}", subject);
+            _logger.LogInformation("JetStream consumer listo. Durable={durableName} Subject={Subject}", durableName, subject);
 
             await foreach (var msg in consumer.ConsumeAsync<string>(cancellationToken: stoppingToken))
             {
