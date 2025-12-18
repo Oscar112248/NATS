@@ -19,6 +19,7 @@ namespace NatsSubscriber2
             var natsUrl = Environment.GetEnvironmentVariable("NATS_URL")
                           ?? "nats://172.22.4.106:4222";
             var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
+            var durable = Environment.GetEnvironmentVariable("NATS_DURABLE") ?? "SUB_PAGOS";
 
 
             _logger.LogInformation("Conectando a NATS en {Url}", natsUrl);
@@ -29,13 +30,13 @@ namespace NatsSubscriber2
             await js.CreateOrUpdateStreamAsync(new StreamConfig
             {
                 Name = "PAGOS",
-                Subjects = new[] { "pago.pruebas" }
+                Subjects = new[] { "pago.*" }
             }, cancellationToken: stoppingToken);
 
 
             var consumerCfg = new ConsumerConfig
             {
-                DurableName = subject,
+                DurableName = durable,
                 FilterSubject = subject,
                 AckPolicy = ConsumerConfigAckPolicy.Explicit,
                 DeliverPolicy = ConsumerConfigDeliverPolicy.All
