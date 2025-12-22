@@ -17,8 +17,18 @@ services:
       - nats
     environment:
       - NATS_URL=nats://nats:4222
-      - NATS_SUBJECT=pago.saludo
-      - NATS_DURABLE=SUB_PAGOS
+      - NATS_SUBJECT=pago.*
+      - NATS_DURABLE=SUB_PAGOS_DINERS
+  
+  subscriber2:
+    build:
+      context: ./NatsSubscriber/NatsSubscriber2
+    depends_on:
+      - nats
+    environment:
+      - NATS_URL=nats://nats:4222
+      - NATS_SUBJECT=pago.*
+      - NATS_DURABLE=SUB_PAGOS_P2P
  
 
   publisher:
