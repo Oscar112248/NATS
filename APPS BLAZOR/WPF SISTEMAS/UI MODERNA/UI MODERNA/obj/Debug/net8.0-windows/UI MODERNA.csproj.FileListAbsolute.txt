@@ -1,0 +1,29 @@
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\bin\Debug\net8.0-windows\Resources\edificio.png
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\bin\Debug\net8.0-windows\Resources\fachada.png
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\bin\Debug\net8.0-windows\Resources\test.mp4
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\bin\Debug\net8.0-windows\UI MODERNA.exe
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\bin\Debug\net8.0-windows\UI MODERNA.deps.json
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\bin\Debug\net8.0-windows\UI MODERNA.runtimeconfig.json
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\bin\Debug\net8.0-windows\UI MODERNA.dll
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\bin\Debug\net8.0-windows\UI MODERNA.pdb
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\bin\Debug\net8.0-windows\MaterialDesignColors.dll
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\bin\Debug\net8.0-windows\MaterialDesignThemes.Wpf.dll
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA.csproj.AssemblyReference.cache
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\MainWindow.baml
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\App.baml
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\MainWindow.g.cs
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\App.g.cs
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA_Content.g.cs
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA_MarkupCompile.cache
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA.g.resources
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA.AssemblyInfoInputs.cache
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA.AssemblyInfo.cs
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA.csproj.CoreCompileInputs.cache
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA.csproj.Up2Date
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA.dll
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\refint\UI MODERNA.dll
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA.pdb
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\UI MODERNA.genruntimeconfig.cache
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\obj\Debug\net8.0-windows\ref\UI MODERNA.dll
+C:\Users\Oscar\Documents\DATAFAST\UI MODERNA\UI MODERNA\bin\Debug\net8.0-windows\Resources\portal.png

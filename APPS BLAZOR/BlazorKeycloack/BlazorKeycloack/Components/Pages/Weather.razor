@@ -1,0 +1,41 @@
+﻿@page "/weather"
+@attribute [StreamRendering]
+@using MudBlazor
+@inject HttpClient httpClient
+
+<MudDataGrid Items="@Elements.Take(4)">
+    <Columns>
+        <PropertyColumn Property="x => x.Number" Title="Nr" />
+        <PropertyColumn Property="x => x.Sign" />
+        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.Position" />
+        <PropertyColumn Property="x => x.Molar" Title="Molar mass" />
+    </Columns>
+</MudDataGrid>
+
+@code {
+    private IEnumerable<Element> Elements = new List<Element>();
+
+    protected override Task OnInitializedAsync()
+    {
+        Elements = new List<Element>
+        {
+            new() { Number = 1,  Sign = "H",  Name = "Hydrogen",  Position = 1,  Molar = 1.008m },
+            new() { Number = 2,  Sign = "He", Name = "Helium",    Position = 18, Molar = 4.0026m },
+            new() { Number = 3,  Sign = "Li", Name = "Lithium",   Position = 1,  Molar = 6.94m },
+            new() { Number = 4,  Sign = "Be", Name = "Beryllium", Position = 2,  Molar = 9.0122m },
+            new() { Number = 5,  Sign = "B",  Name = "Boron",     Position = 13, Molar = 10.81m },
+            new() { Number = 6,  Sign = "C",  Name = "Carbon",    Position = 14, Molar = 12.011m },
+        };
+        return Task.CompletedTask;
+    }
+
+    public class Element
+    {
+        public int Number { get; set; }
+        public string Sign { get; set; } = "";
+        public string Name { get; set; } = "";
+        public int Position { get; set; }
+        public decimal Molar { get; set; }
+    }
+}

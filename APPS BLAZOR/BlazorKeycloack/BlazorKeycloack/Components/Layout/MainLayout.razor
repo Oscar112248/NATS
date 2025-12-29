@@ -1,0 +1,102 @@
+﻿@using BlazorKeycloack.Services.Layout
+@using BlazorKeycloack.Themes
+@using MudBlazor
+@inherits LayoutComponentBase
+@inject LayoutService LayoutService
+
+<MudLayout>
+<MudRTLProvider RightToLeft="@LayoutService.IsRTL">
+    <MudThemeProvider />
+    <MudPopoverProvider />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+    <MudThemeProvider @ref="@_mudThemeProvider" Theme="@LayoutService.CurrentTheme" IsDarkMode="@LayoutService.IsDarkMode" IsDarkModeChanged="@LayoutService.SetDarkMode" />
+        <NavMenu />
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h5" Class="mt-1">Application</MudText>
+        </MudDrawerHeader>
+        @*NavMenu*@
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+
+</MudRTLProvider>
+</MudLayout>
+
+@code
+{
+
+
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+    private MudThemeProvider _mudThemeProvider = null!;
+    private bool _defaultDarkMode;
+    public void Dispose()
+    {
+        LayoutService.MajorUpdateOccured -= LayoutServiceOnMajorUpdateOccured;
+        GC.SuppressFinalize(this);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            await ApplyUserPreferences();
+            StateHasChanged();
+        }
+    }
+
+    private async Task ApplyUserPreferences()
+    {
+        _defaultDarkMode = await _mudThemeProvider.GetSystemPreference();
+        await LayoutService.ApplyUserPreferences(_defaultDarkMode);
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        LayoutService.MajorUpdateOccured += LayoutServiceOnMajorUpdateOccured;
+        LayoutService.SetBaseTheme(Theme.ApplicationTheme());
+        return base.OnInitializedAsync();
+    }
+
+    private void LayoutServiceOnMajorUpdateOccured(object? sender, EventArgs e)
+    {
+        InvokeAsync(() => StateHasChanged());
+    }
+
+}
+
+@* <div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+ *@

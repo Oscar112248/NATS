@@ -5,7 +5,7 @@ using NATS.Net;
 using System.Text.Json;
 using System.Threading;
 
-var natsUrl = Environment.GetEnvironmentVariable("NATS_URL") ?? "nats://nats:4222";
+var natsUrl = Environment.GetEnvironmentVariable("NATS_URL") ?? "nats://172.22.4.106:4222";
 var subject = Environment.GetEnvironmentVariable("NATS_SUBJECT") ?? "pago.saludo";
 
 // Guardamos conexión/contexto como “actuales”

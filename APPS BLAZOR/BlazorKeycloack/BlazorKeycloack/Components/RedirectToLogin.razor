@@ -1,0 +1,15 @@
+﻿@inject NavigationManager Nav
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Si quieres que SIEMPRE caiga a /counter luego de login desde el inicio:
+        var returnUrl = "/counter";
+
+        // Si prefieres volver a la URL actual que el usuario intentó abrir, usa esto:
+        // var relative = Nav.ToBaseRelativePath(Nav.Uri);
+        // var returnUrl = "/" + relative;
+
+        Nav.NavigateTo($"/login?returnUrl={Uri.EscapeDataString(returnUrl)}", forceLoad: true);
+    }
+}
